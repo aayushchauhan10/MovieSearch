@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
-import { View, StyleSheet, FlatList, Text, TextInput } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import SearchBar from "../components/SearchBar";
 import MovieList from "../components/MovieList";
 import { fetchTrendingMovies, searchMovies } from "../services/api";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
-// Define Movie type
 interface Movie {
   id: number;
   title: string;
@@ -14,50 +13,56 @@ interface Movie {
   overview: string;
 }
 
-// Define navigation type
 type RootStackParamList = {
   Home: undefined;
   MovieDetails: { movieId: number; movieTitle: string };
+  LikedMovies: { likedMovies: Movie[] };
 };
 
 type NavigationProps = StackNavigationProp<RootStackParamList, "Home">;
 
 const HomeScreen: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [searchResults, setSearchResults] = useState<Movie[]>([]);
+  const [likedMovies, setLikedMovies] = useState<Movie[]>([]);
   const navigation = useNavigation<NavigationProps>();
-  const inputRef = useRef<TextInput>(null);
 
   useEffect(() => {
     fetchTrendingMovies().then((data) => setMovies(data));
   }, []);
 
-  const handleSearch = async (query: string) => {
-    if (query.trim() === "") {
-      inputRef.current?.focus();
-    } else {
-      const results = await searchMovies(query);
-      setSearchResults(results);
-    }
+  const handleLikeToggle = (movie: Movie) => {
+    setLikedMovies((prevLikedMovies) =>
+      prevLikedMovies.some((m) => m.id === movie.id)
+        ? prevLikedMovies.filter((m) => m.id !== movie.id)
+        : [...prevLikedMovies, movie]
+    );
   };
 
   return (
     <View style={styles.container}>
-      <SearchBar onSearch={handleSearch} />
-      <Text
-        style={{
-          marginTop: 20,
-          marginHorizontal: 10,
-          marginBottom: 10,
-          fontSize: 20,
-          fontWeight: "bold",
+      <SearchBar
+        onSearch={async (query) => {
+          if (query.trim()) {
+            const results = await searchMovies(query);
+            setMovies(results);
+          }
         }}
+      />
+
+      {/* Navigate to Liked Movies Screen */}
+      <TouchableOpacity
+        style={styles.likedMoviesButton}
+        onPress={() => navigation.navigate("LikedMovies", { likedMovies })}
       >
-        Trending Movies
-      </Text>
+        <Text style={styles.likedMoviesText}>❤️ View Liked Movies</Text>
+      </TouchableOpacity>
+
+      <Text style={styles.heading}>Trending Movies</Text>
+
       <MovieList
-        onLike={(movie) => console.log("Liked movie:", movie)}
         movies={movies}
+        onLike={handleLikeToggle}
+        likedMovies={likedMovies}
         onPress={(movie: Movie) =>
           navigation.navigate("MovieDetails", {
             movieId: movie.id,
@@ -72,14 +77,29 @@ const HomeScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 0,
+    backgroundColor: "#fff",
+    paddingTop: 10,
   },
   heading: {
-    marginHorizontal: 10,
-    marginTop: 20,
+    marginHorizontal: 15,
+    marginTop: 10,
     marginBottom: 10,
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "bold",
+    color: "#000",
+  },
+  likedMoviesButton: {
+    backgroundColor: "#ff4757",
+    padding: 12,
+    marginHorizontal: 15,
+    marginVertical: 10,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  likedMoviesText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
   },
 });
 

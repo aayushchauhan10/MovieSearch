@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  ActivityIndicator,
-} from "react-native";
+import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { searchMovies } from "../services/api";
 import MovieList from "../components/MovieList";
@@ -30,7 +24,9 @@ const SearchResultsScreen = () => {
   const route = useRoute<RouteProp<RootStackParamList, "SearchResults">>();
   const navigation = useNavigation<NavigationProps>();
   const { query } = route.params;
-  const [movies, setMovies] = useState([]);
+
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [likedMovies, setLikedMovies] = useState<number[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -43,6 +39,15 @@ const SearchResultsScreen = () => {
     }, 3000);
   }, [query]);
 
+  // Handle Like/Unlike
+  const handleLike = (movie: Movie) => {
+    setLikedMovies((prevLikedMovies) =>
+      prevLikedMovies.includes(movie.id)
+        ? prevLikedMovies.filter((id) => id !== movie.id)
+        : [...prevLikedMovies, movie.id]
+    );
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Search Results for "{query}"</Text>
@@ -50,14 +55,16 @@ const SearchResultsScreen = () => {
         <ActivityIndicator size="large" color="#6200ea" style={styles.loader} />
       ) : (
         <MovieList
+          movies={movies}
           onPress={(movie: Movie) =>
             navigation.navigate("MovieDetails", {
               movieId: movie.id,
               movieTitle: movie.title,
             })
           }
-          movies={movies}
-          onLike={(movie) => console.log("Liked movie:", movie)}
+          showLikeButton={false}
+          onLike={handleLike}
+          likedMovies={likedMovies}
         />
       )}
     </View>

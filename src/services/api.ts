@@ -7,7 +7,7 @@ export const fetchTrendingMovies = async () => {
     const response = await axios.get(`https://api.themoviedb.org/3/movie/popular?language=en-US&page=1`, {
         headers: {
             "Accept": 'application/json',
-            "Authorization": `Bearer ${process.env.READER_TOKEN}`
+            "Authorization": `Bearer ${process.env.EXPO_PUBLIC_READER_TOKEN}`
         }
     });
     const data = await response.data;
@@ -25,7 +25,7 @@ export const searchMovies = async (query: string) => {
     const response = await axios.get(`https://api.themoviedb.org/3/search/movie?query=${query}&include_adult=false&language=en-US&page=1`, {
       headers: {
         "Accept": 'application/json',
-        "Authorization": `Bearer ${process.env.READER_TOKEN}`
+        "Authorization": `Bearer ${process.env.EXPO_PUBLIC_READER_TOKEN}`
       }
     })
     return response.data.results;
@@ -41,7 +41,7 @@ export const getMovieDetails = async (movieId: number) => {
     const response = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}`, {
         headers: {
           "Accept": 'application/json',
-          "Authorization": `Bearer ${process.env.READER_TOKEN}`
+          "Authorization": `Bearer ${process.env.EXPO_PUBLIC_READER_TOKEN}`
         }})
     return response.data;
 

@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "MovieSearchApp",
-    "slug": "MovieSearchApp",
+    "slug": "moviesearch",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -31,8 +31,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "aa985ebc-a892-4140-8a29-27e3596886ac"
+        "projectId": "37ef23e1-a31f-4967-962f-f311c05fcbdb"
       }
-    }
+    },
+    "owner": "aayushchauhan009"
   }
 }

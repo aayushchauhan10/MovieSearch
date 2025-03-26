@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -17,11 +17,31 @@ interface Movie {
 
 interface MovieListProps {
   movies: Movie[];
-  onLike: (movie: Movie) => void;
+  onLike?: (movie: Movie) => void;
   onPress: (movie: Movie) => void;
+  showLikeButton?: boolean;
+  likedMovies?: Movie[] | number[];
 }
 
-const MovieList: React.FC<MovieListProps> = ({ movies, onLike, onPress }) => {
+const MovieList: React.FC<MovieListProps> = ({
+  movies,
+  onLike,
+  onPress,
+  showLikeButton = true,
+}) => {
+  const [likedMovies, setLikedMovies] = useState<number[]>([]);
+
+  const handleLikeToggle = (movie: Movie) => {
+    if (!onLike) return;
+
+    setLikedMovies((prev) =>
+      prev.includes(movie.id)
+        ? prev.filter((id) => id !== movie.id)
+        : [...prev, movie.id]
+    );
+    onLike(movie);
+  };
+
   return (
     <FlatList
       data={movies}
@@ -45,9 +65,23 @@ const MovieList: React.FC<MovieListProps> = ({ movies, onLike, onPress }) => {
             <Text style={styles.description}>
               {item.overview.substring(0, 50)}...
             </Text>
-            <TouchableOpacity onPress={() => onLike(item)}>
-              <Text style={styles.likeButton}>❤️ Like</Text>
-            </TouchableOpacity>
+            {showLikeButton && (
+              <TouchableOpacity
+                style={styles.likeButton}
+                onPress={() => handleLikeToggle(item)}
+                activeOpacity={0.7}
+              >
+                <Text
+                  style={
+                    likedMovies.includes(item.id)
+                      ? styles.liked
+                      : styles.unliked
+                  }
+                >
+                  {likedMovies.includes(item.id) ? "❤️ Liked" : "🤍 Like"}
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
         </TouchableOpacity>
       )}
@@ -58,13 +92,12 @@ const MovieList: React.FC<MovieListProps> = ({ movies, onLike, onPress }) => {
 const styles = StyleSheet.create({
   row: {
     justifyContent: "space-between",
-    paddingHorizontal: 0,
+    paddingHorizontal: 10,
   },
   card: {
     flex: 1,
     backgroundColor: "#fff",
     borderRadius: 10,
-    paddingBottom: 10,
     margin: 10,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -72,6 +105,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     alignItems: "center",
+    overflow: "hidden",
   },
   poster: {
     width: "100%",
@@ -95,8 +129,21 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   likeButton: {
+    marginTop: 5,
+    paddingVertical: 5,
+    paddingHorizontal: 15,
+    borderRadius: 10,
+    backgroundColor: "#eee",
+  },
+  liked: {
     color: "red",
     fontWeight: "bold",
+    fontSize: 14,
+  },
+  unliked: {
+    color: "#333",
+    fontWeight: "bold",
+    fontSize: 14,
   },
 });
 
