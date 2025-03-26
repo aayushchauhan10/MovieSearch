@@ -19,8 +19,6 @@ cd MovieSearchApp
 
 ```sh
 npm install
-# OR
-yarn install
 ```
 
 ### 3️⃣ **Run the App**
@@ -37,8 +35,7 @@ npm run start
 
 ```
 MovieSearchApp/
-│-- assets/              # Android-specific files
-│-- ios/                  # iOS-specific files
+│-- assets/              # Icons and other images
 │-- src/                  # Main source code
 │   ├── components/       # Reusable UI components
 │   ├── screens/          # Screens of the app
@@ -46,9 +43,9 @@ MovieSearchApp/
 │   │   ├── MovieDetailsScreen.tsx
 │   │   ├── SearchResultsScreen.tsx
 │   │   ├── SplashScreen.tsx
+|   |   ├── LikedMoviesScreen.tsx
 │   ├── services/
-|       ├── api.ts # All API calls here
-├── assets/           # Images and icons
+|       ├── api.ts    # All API calls here
 |-- App.tsx           # Main App file
 │-- package.json      # Project dependencies
 │-- README.md         # Project Documentation
