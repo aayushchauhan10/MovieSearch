@@ -11,7 +11,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
-// Define Navigation Props
 type RootStackParamList = {
   SearchResults: { query: string };
 };

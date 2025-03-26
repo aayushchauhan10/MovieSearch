@@ -35,7 +35,6 @@ const MovieDetailsScreen: React.FC = () => {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Backdrop Image */}
       <ImageBackground
         source={{
           uri: `https://image.tmdb.org/t/p/w780${movie.backdrop_path}`,
