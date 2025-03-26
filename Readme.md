@@ -11,7 +11,7 @@ This is a **React Native** movie search app that allows users to search for movi
 ### 1️⃣ **Clone the Repository**
 
 ```sh
-git clone https://github.com/your-repo/MovieSearchApp.git
+git clone (https://github.com/aayushchauhan10/MovieSearch.git)
 cd MovieSearchApp
 ```
 
